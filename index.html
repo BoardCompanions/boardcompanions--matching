@@ -235,15 +235,11 @@
   const CONTACTS_BOARD = '5099121389';
 
   async function queryMonday(q) {
-    const res = await fetch('/.netlify/functions/monday', {
+    const res = await fetch('https://api.monday.com/v2', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', 'Authorization': API_KEY },
       body: JSON.stringify({ query: q })
     });
-    if (!res.ok) {
-      const text = await res.text();
-      throw new Error('Function error: ' + text);
-    }
     return res.json();
   }
 
