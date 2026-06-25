@@ -14,9 +14,16 @@ exports.handler = async function(event, context) {
   }
 
   try {
-    // Simple hardcoded test query
-    const query = `{ boards(ids: [5099121389]) { items_page(limit: 10) { items { id name } } } }`;
+    let query;
     
+    // If body has a query, use it; otherwise use default
+    if (event.body) {
+      const body = JSON.parse(event.body);
+      query = body.query || `{ boards(ids: [5099121389]) { items_page(limit: 500) { items { id name column_values { id text } } } } }`;
+    } else {
+      query = `{ boards(ids: [5099121389]) { items_page(limit: 500) { items { id name column_values { id text } } } } }`;
+    }
+
     const response = await fetch("https://api.monday.com/v2", {
       method: "POST",
       headers: {
@@ -40,7 +47,7 @@ exports.handler = async function(event, context) {
     return {
       statusCode: 500,
       headers: { "Access-Control-Allow-Origin": "*" },
-      body: JSON.stringify({ error: error.message, stack: error.stack })
+      body: JSON.stringify({ error: error.message })
     };
   }
 };
