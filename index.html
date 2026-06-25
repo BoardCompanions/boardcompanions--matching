@@ -240,6 +240,10 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ query: q })
     });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error('Function error: ' + text);
+    }
     return res.json();
   }
 
